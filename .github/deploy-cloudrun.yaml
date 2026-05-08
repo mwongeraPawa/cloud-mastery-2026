@@ -1,0 +1,73 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGION: ${{ secrets.GCP_REGION }}
+      BACKEND_SERVICE_NAME: ${{ secrets.CLOUD_RUN_BACKEND_SERVICE_NAME }}
+      FRONTEND_SERVICE_NAME: ${{ secrets.CLOUD_RUN_FRONTEND_SERVICE_NAME }}
+      BACKEND_IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLOUD_RUN_BACKEND_SERVICE_NAME }}:${{ github.sha }}
+      FRONTEND_IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLOUD_RUN_FRONTEND_SERVICE_NAME }}:${{ github.sha }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud with Workload Identity Federation
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+          token_format: 'access_token'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          install_components: 'beta'
+
+      - name: Configure Docker for Google Cloud
+        run: |
+          gcloud auth configure-docker
+
+      # Build and push backend
+      - name: Build backend Docker image
+        run: |
+          docker build -t $BACKEND_IMAGE ./backend
+
+      - name: Push backend Docker image
+        run: |
+          docker push $BACKEND_IMAGE
+
+      # Build and push frontend
+      - name: Build frontend Docker image
+        run: |
+          docker build -t $FRONTEND_IMAGE ./frontend
+
+      - name: Push frontend Docker image
+        run: |
+          docker push $FRONTEND_IMAGE
+
+      # Deploy backend to Cloud Run
+      - name: Deploy backend to Cloud Run
+        run: |
+          gcloud run deploy $BACKEND_SERVICE_NAME \
+            --image $BACKEND_IMAGE \
+            --region $REGION \
+            --platform managed \
+            --allow-unauthenticated
+
+      # Deploy frontend to Cloud Run
+      - name: Deploy frontend to Cloud Run
+        run: |
+          gcloud run deploy $FRONTEND_SERVICE_NAME \
+            --image $FRONTEND_IMAGE \
+            --region $REGION \
+            --platform managed \
+            --allow-unauthenticated
