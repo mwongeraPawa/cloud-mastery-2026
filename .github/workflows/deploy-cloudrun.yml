@@ -18,6 +18,7 @@ jobs:
       FRONTEND_SERVICE_NAME: ${{ secrets.CLOUD_RUN_FRONTEND_SERVICE_NAME }}
       BACKEND_IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLOUD_RUN_BACKEND_SERVICE_NAME }}:${{ github.sha }}
       FRONTEND_IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLOUD_RUN_FRONTEND_SERVICE_NAME }}:${{ github.sha }}
+      MYSQL_PRISMA_URL: ${{ secrets.MYSQL_PRISMA_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,6 +65,7 @@ jobs:
             --image $BACKEND_IMAGE \
             --region $REGION \
             --platform managed \
+            --port 5001 \
             --allow-unauthenticated \
             --set-env-vars "MYSQL_PRISMA_URL=${{ secrets.MYSQL_PRISMA_URL }}"
 
@@ -74,4 +76,5 @@ jobs:
             --image $FRONTEND_IMAGE \
             --region $REGION \
             --platform managed \
+            --port 3000 \
             --allow-unauthenticated
