@@ -35,4 +35,5 @@ COPY --from=builder --chown=nestjs:nodejs /app/prisma ./prisma
 USER nestjs
 
 EXPOSE 5001
+ENV PORT=5001
 CMD ["node", "dist/src/main.js"]
