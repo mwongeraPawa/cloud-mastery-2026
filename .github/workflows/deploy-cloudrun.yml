@@ -64,7 +64,8 @@ jobs:
             --image $BACKEND_IMAGE \
             --region $REGION \
             --platform managed \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --set-env-vars "MYSQL_PRISMA_URL=${{ secrets.MYSQL_PRISMA_URL }}"
 
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
