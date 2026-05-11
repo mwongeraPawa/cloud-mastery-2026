@@ -67,7 +67,6 @@ jobs:
             --port 8080 \
             --allow-unauthenticated \
             --set-secrets="MYSQL_PRISMA_URL=MYSQL_PRISMA_URL:latest" \
-            --set-env-vars="PORT=8080"
 
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
