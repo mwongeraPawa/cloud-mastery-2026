@@ -64,10 +64,9 @@ jobs:
           gcloud run deploy $BACKEND_SERVICE_NAME \
             --image $BACKEND_IMAGE \
             --region $REGION \
-            --platform managed \
-            --port 5001 \
+            --port 8080 \
             --allow-unauthenticated \
-            --set-env-vars "MYSQL_PRISMA_URL=${{ secrets.MYSQL_PRISMA_URL }}"
+            --set-env-vars "MYSQL_PRISMA_URL=${{ secrets.MYSQL_PRISMA_URL }},PORT=8080"
 
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
@@ -75,6 +74,5 @@ jobs:
           gcloud run deploy $FRONTEND_SERVICE_NAME \
             --image $FRONTEND_IMAGE \
             --region $REGION \
-            --platform managed \
             --port 3000 \
             --allow-unauthenticated

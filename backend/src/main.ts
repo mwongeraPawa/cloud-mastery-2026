@@ -4,7 +4,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port = process.env.PORT || 5001; 
+  const port = process.env.PORT || 8080; 
 
   // Set a global prefix
   app.setGlobalPrefix('api');
@@ -18,7 +18,7 @@ async function bootstrap() {
   );
 
   app.enableCors();
-  await app.listen(process.env.PORT || 5001, '0.0.0.0');
+  await app.listen(port, '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
