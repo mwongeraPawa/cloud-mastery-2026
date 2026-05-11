@@ -34,5 +34,5 @@ COPY --from=builder --chown=nestjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nestjs:nodejs /app/prisma ./prisma
 USER nestjs
 
-EXPOSE 8080
+EXPOSE 5001
 CMD ["node", "dist/src/main.js"]
