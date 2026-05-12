@@ -68,7 +68,7 @@ jobs:
             --port 8080 \
             --allow-unauthenticated \
             --set-secrets="MYSQL_PRISMA_URL=MYSQL_PRISMA_URL:latest" \
-            --add-cloudsql-instances=sean-mwiti-1:us-central1:cloud-mastery-db-v8
+            --add-cloudsql-instances=${{ secrets.CLOUDSQL_INSTANCE_CONNECTION_NAME }}
 
         # Run Prisma migrations and seed database
           # Download and start Cloud SQL Auth Proxy
@@ -78,7 +78,7 @@ jobs:
           chmod +x cloud_sql_proxy
       - name: Start Cloud SQL Auth Proxy
         run: |
-          ./cloud_sql_proxy -dir=/cloudsql &
+          ./cloud_sql_proxy -dir=/cloudsql -instances=${{ secrets.CLOUDSQL_INSTANCE_CONNECTION_NAME }}=tcp:3306 &
 
       - name: Install backend dependencies
         run: |
