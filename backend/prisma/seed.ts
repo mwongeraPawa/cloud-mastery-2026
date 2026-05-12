@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Starting seed with 500 records each...');
+  console.log('Starting seed with 50 records each...');
   // Check if data already exists
   const existingCustomersCount = await prisma.customer.count();
   const existingProductsCount = await prisma.product.count();
@@ -17,11 +17,11 @@ async function main() {
   }
 
   // Generate 500 customers
-  console.log('Creating 500 customers...');
+  console.log('Creating 50 customers...');
   const customers = [];
   const kenyanCities = ['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret', 'Thika', 'Machakos', 'Meru', 'Nyeri', 'Kakamega'];
   
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 50; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     
@@ -68,11 +68,11 @@ async function main() {
   }
 
   // Generate 500 products
-  console.log('Creating 500 products...');
+  console.log('Creating 50 products...');
   const productCategories = ['Electronics', 'Furniture', 'Appliances', 'Clothing', 'Books', 'Sports', 'Home & Garden', 'Automotive', 'Health & Beauty', 'Toys'];
   const products = [];
 
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 50; i++) {
     const category = faker.helpers.arrayElement(productCategories);
     const unitCost = parseFloat(faker.commerce.price({ min: 500, max: 150000, dec: 2 }));
     const quantity = faker.number.int({ min: 1, max: 100 });
@@ -120,13 +120,13 @@ async function main() {
 
   // Generate 500 orders with order items
   if (createdCustomers.length > 0 && createdProducts.length > 0) {
-    console.log('Creating 500 orders with items...');
+    console.log('Creating 50 orders with items...');
     const paymentMethods = ['VISA', 'MASTERCARD', 'PAYPAL', 'CASH', 'BANK_TRANSFER', 'MPESA'];
     const statuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
     
     let orderBatch = [];
     
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 50; i++) {
       const customer = faker.helpers.arrayElement(createdCustomers);
       const orderDate = faker.date.recent({ days: 90 }); // Random date within last 90 days
       const orderNumber = `ORD-${Date.now()}-${faker.string.alphanumeric(6).toUpperCase()}`;

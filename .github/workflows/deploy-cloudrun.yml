@@ -70,6 +70,26 @@ jobs:
             --set-secrets="MYSQL_PRISMA_URL=MYSQL_PRISMA_URL:latest" \
             --add-cloudsql-instances=sean-mwiti-1:us-central1:cloud-mastery-db-v8
 
+        # Run Prisma migrations and seed database
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Run Prisma migrations
+        run: |
+          cd backend
+          npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.MYSQL_PRISMA_URL }}
+
+      - name: Seed database with Prisma
+        run: |
+          cd backend
+          npx prisma db seed
+        env:
+          DATABASE_URL: ${{ secrets.MYSQL_PRISMA_URL }}
+
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
         run: |
