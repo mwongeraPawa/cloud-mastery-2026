@@ -49,15 +49,6 @@ jobs:
         run: |
           docker push $BACKEND_IMAGE
 
-      # Build and push frontend
-      - name: Build frontend Docker image
-        run: |
-          docker build -t $FRONTEND_IMAGE ./frontend
-
-      - name: Push frontend Docker image
-        run: |
-          docker push $FRONTEND_IMAGE
-
       # Deploy backend to Cloud Run
       - name: Deploy backend to Cloud Run
         run: |
@@ -99,6 +90,27 @@ jobs:
         env:
           MYSQL_PRISMA_URL: "mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@127.0.0.1:3306/${{ secrets.DB_NAME }}"
 
+       # Retrieve backend Cloud Run URL
+      - name: Get backend Cloud Run URL
+        id: get-backend-url
+        run: |
+          BACKEND_URL=$(gcloud run services describe $BACKEND_SERVICE_NAME --region $REGION --format='value(status.url)')
+          echo "BACKEND_URL=$BACKEND_URL" >> $GITHUB_ENV
+
+      # Update frontend .env with backend URL
+      - name: Update frontend .env
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${BACKEND_URL}/api/v1" > frontend/.env
+
+      # Build and push frontend
+      - name: Build frontend Docker image
+        run: |
+          docker build -t $FRONTEND_IMAGE ./frontend
+
+      - name: Push frontend Docker image
+        run: |
+          docker push $FRONTEND_IMAGE
+          
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
         run: |
