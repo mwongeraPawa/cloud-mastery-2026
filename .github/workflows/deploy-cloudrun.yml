@@ -68,7 +68,7 @@ jobs:
             --port 8080 \
             --allow-unauthenticated \
             --set-secrets="MYSQL_PRISMA_URL=MYSQL_PRISMA_URL:latest" \
-            --add-cloudsql-instances=$pawait-data-hub:us-central1:cloud-mastery-db-v8
+            --add-cloudsql-instances=$sean-mwiti-1:us-central1:cloud-mastery-db-v8
 
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
