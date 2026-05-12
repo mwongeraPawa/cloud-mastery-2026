@@ -90,14 +90,14 @@ jobs:
           cd backend
           npx prisma migrate deploy
         env:
-          DATABASE_URL: "mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@127.0.0.1:3306/${{ secrets.DB_NAME }}"
+          MYSQL_PRISMA_URL: "mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@127.0.0.1:3306/${{ secrets.DB_NAME }}"
 
       - name: Seed database with Prisma
         run: |
           cd backend
           npx prisma db seed
         env:
-          DATABASE_URL: "mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@127.0.0.1:3306/${{ secrets.DB_NAME }}"
+          MYSQL_PRISMA_URL: "mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@127.0.0.1:3306/${{ secrets.DB_NAME }}"
 
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
