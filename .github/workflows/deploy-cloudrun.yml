@@ -71,6 +71,15 @@ jobs:
             --add-cloudsql-instances=sean-mwiti-1:us-central1:cloud-mastery-db-v8
 
         # Run Prisma migrations and seed database
+          # Download and start Cloud SQL Auth Proxy
+      - name: Download Cloud SQL Auth Proxy
+        run: |
+          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+          chmod +x cloud_sql_proxy
+      - name: Start Cloud SQL Auth Proxy
+        run: |
+          ./cloud_sql_proxy -dir=/cloudsql &
+
       - name: Install backend dependencies
         run: |
           cd backend
@@ -81,14 +90,14 @@ jobs:
           cd backend
           npx prisma migrate deploy
         env:
-          DATABASE_URL: ${{ secrets.MYSQL_PRISMA_URL }}
+          DATABASE_URL: "mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@127.0.0.1:3306/${{ secrets.DB_NAME }}"
 
       - name: Seed database with Prisma
         run: |
           cd backend
           npx prisma db seed
         env:
-          DATABASE_URL: ${{ secrets.MYSQL_PRISMA_URL }}
+          DATABASE_URL: "mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@127.0.0.1:3306/${{ secrets.DB_NAME }}"
 
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
