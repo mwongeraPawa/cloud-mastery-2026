@@ -64,9 +64,11 @@ jobs:
           gcloud run deploy $BACKEND_SERVICE_NAME \
             --image $BACKEND_IMAGE \
             --region $REGION \
+            --service-account=${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }} \
             --port 8080 \
             --allow-unauthenticated \
             --set-secrets="MYSQL_PRISMA_URL=MYSQL_PRISMA_URL:latest" \
+            --add-cloudsql-instances=$pawait-data-hub:us-central1:cloud-mastery-db-v8
 
       # Deploy frontend to Cloud Run
       - name: Deploy frontend to Cloud Run
